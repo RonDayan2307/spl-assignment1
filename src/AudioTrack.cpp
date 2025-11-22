@@ -36,6 +36,8 @@ AudioTrack::~AudioTrack() {
     std::cout << "AudioTrack destructor called for: " << title << std::endl;
     #endif
     // Your code here...
+
+    // removing data from heap and then access to heap
     delete[] waveform_data;
     waveform_data = nullptr;
 }
@@ -47,6 +49,19 @@ AudioTrack::AudioTrack(const AudioTrack& other)
     std::cout << "AudioTrack copy constructor called for: " << other.title << std::endl;
     #endif
     // Your code here...
+
+    // copying values that are on the AF
+    title = other.title;
+    artists = other.artists;
+    duration_seconds = other.duration_seconds;
+    bpm = other.bpm;
+    waveform_size = other.waveform_size;
+
+    // allocating memory on heap and then deep copying the values
+    waveform_data = new double[waveform_size];
+    for (size_t i = 0; i < waveform_size; ++i) {
+        waveform_data[i] = other.waveform_data[i];
+    }
 }
 
 AudioTrack& AudioTrack::operator=(const AudioTrack& other) {
@@ -55,6 +70,27 @@ AudioTrack& AudioTrack::operator=(const AudioTrack& other) {
     std::cout << "AudioTrack copy assignment called for: " << other.title << std::endl;
     #endif
     // Your code here...
+
+    // if this=other nothing needs to be done
+    if (this != &other){
+
+        //clearing memory on heap that is not needed anymore
+        delete[] waveform_data;
+        waveform_data = nullptr;
+
+        // copying values that are on the AF
+        title = other.title;
+        artists = other.artists;
+        duration_seconds = other.duration_seconds;
+        bpm = other.bpm;
+        waveform_size = other.waveform_size;
+
+        // allocating memory on heap and then deep copying the values
+        waveform_data = new double[waveform_size];
+        for (size_t i = 0; i < waveform_size; ++i) {
+            waveform_data[i] = other.waveform_data[i];
+        }
+    }
     return *this;
 }
 
@@ -64,6 +100,17 @@ AudioTrack::AudioTrack(AudioTrack&& other) noexcept {
     std::cout << "AudioTrack move constructor called for: " << other.title << std::endl;
     #endif
     // Your code here...
+
+    // copying values that are on the AF
+    title = other.title;
+    artists = other.artists;
+    duration_seconds = other.duration_seconds;
+    bpm = other.bpm;
+    waveform_size = other.waveform_size;
+
+    // stealing the address of the original audiotrack and removing its the access to that address
+    waveform_data = other.waveform_data;
+    other.waveform_data = nullptr;
 }
 
 AudioTrack& AudioTrack::operator=(AudioTrack&& other) noexcept {
@@ -73,6 +120,25 @@ AudioTrack& AudioTrack::operator=(AudioTrack&& other) noexcept {
     std::cout << "AudioTrack move assignment called for: " << other.title << std::endl;
     #endif
     // Your code here...
+
+    // if this=other nothing needs to be done
+    if (this != &other){
+
+        //clearing memory on heap that is not needed anymore
+        delete[] waveform_data;
+        waveform_data = nullptr;
+
+        // copying values that are on the AF
+        title = other.title;
+        artists = other.artists;
+        duration_seconds = other.duration_seconds;
+        bpm = other.bpm;
+        waveform_size = other.waveform_size;
+
+        // stealing the address of the original audiotrack and removing its the access to that address
+        waveform_data = other.waveform_data;
+        other.waveform_data = nullptr;
+    }
     return *this;
 }
 
