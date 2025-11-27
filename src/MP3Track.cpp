@@ -40,7 +40,7 @@ PointerWrapper<AudioTrack> MP3Track::clone() const {
 }
 
 
-//constructors and destructor:
+//constructors:
 
 MP3Track::MP3Track(const MP3Track& other) :
     AudioTrack(other), 

@@ -37,3 +37,36 @@ PointerWrapper<AudioTrack> WAVTrack::clone() const {
     // TODO: Implement the clone method
     return PointerWrapper<AudioTrack>(nullptr); // Replace with your implementation
 }
+
+
+//constructors:
+
+WAVTrack::WAVTrack(const WAVTrack& other) :
+    AudioTrack(other), 
+    sample_rate(other.sample_rate), 
+    bit_depth(other.bit_depth) {}
+
+WAVTrack& WAVTrack::operator=(const WAVTrack& other) {
+    // if this=other nothing needs to be done
+    if (this != &other){
+        AudioTrack::operator=(other);
+        sample_rate = other.sample_rate;
+        bit_depth = other.bit_depth; 
+    }
+    return *this;
+}
+
+WAVTrack::WAVTrack(WAVTrack&& other) noexcept:
+    AudioTrack(other), 
+    sample_rate(other.sample_rate), 
+    bit_depth(other.bit_depth) {}
+
+WAVTrack& WAVTrack::operator=(WAVTrack&& other) noexcept {
+    // if this=other nothing needs to be done
+    if (this != &other){
+        AudioTrack::operator=(other);
+        sample_rate = other.sample_rate;
+        bit_depth = other.bit_depth; 
+    }
+    return *this;
+}

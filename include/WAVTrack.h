@@ -56,6 +56,13 @@ public:
     // Getters
     int get_sample_rate() const { return sample_rate; }
     int get_bit_depth() const { return bit_depth; }
+
+    // Rule of 5
+    //no need for destructor - audiotrack is enough
+    WAVTrack(const WAVTrack& other);
+    WAVTrack& operator=(const WAVTrack& other);
+    WAVTrack(WAVTrack&& other) noexcept;
+    WAVTrack& operator=(WAVTrack&& other) noexcept;
 };
 
 #endif // WAVTRACK_H

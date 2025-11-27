@@ -56,6 +56,8 @@ public:
     int get_bitrate() const { return bitrate; }
     bool has_tags() const { return has_id3_tags; }
 
+    // Rule of 5
+    //no need for destructor - audiotrack is enough
     MP3Track(const MP3Track& other);
     MP3Track& operator=(const MP3Track& other);
     MP3Track(MP3Track&& other) noexcept;
