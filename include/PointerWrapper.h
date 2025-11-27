@@ -74,8 +74,10 @@ public:
      * Don't forget about self-assignment!
      */
     PointerWrapper& operator=(PointerWrapper&& other) noexcept {
-        if (this != other) {
-            delete ptr;
+        if (this != &other) {
+            if (ptr) {
+                delete ptr;
+            }
             ptr = other.ptr;
             other.ptr = nullptr;
         }
@@ -92,7 +94,7 @@ public:
 
     T& operator*() const {
         if(!ptr){
-            throw new std::runtime_error("ptr is null ");
+            throw std::runtime_error("ptr is null ");
         }
         return *ptr;
     };
@@ -103,6 +105,9 @@ public:
      * What safety checks should you perform?
      */
     T* operator->() const {
+        if(!ptr){
+            throw std::runtime_error("ptr is null ");
+        }
         return ptr;
     }
 
@@ -113,6 +118,9 @@ public:
      * @throws std::runtime_error if ptr is null
      */
     T* get() const {
+        if(!ptr){
+            throw std::runtime_error("ptr is null ");
+        }
         return ptr; // Placeholder
     }
 
@@ -149,8 +157,9 @@ public:
      * Why might the explicit keyword be important here?
      */
     explicit operator bool() const {
-        if (ptr)
-        return true; 
+        if (ptr) {
+            return true; 
+        }    
         return false; 
     }
 
