@@ -38,3 +38,36 @@ PointerWrapper<AudioTrack> MP3Track::clone() const {
     // TODO: Implement polymorphic cloning
     return PointerWrapper<AudioTrack>(nullptr); // Replace with your implementation
 }
+
+
+//constructors and destructor:
+
+MP3Track::MP3Track(const MP3Track& other) :
+    AudioTrack(other), 
+    bitrate(other.bitrate), 
+    has_id3_tags(other.has_id3_tags) {}
+
+MP3Track& MP3Track::operator=(const MP3Track& other) {
+    // if this=other nothing needs to be done
+    if (this != &other){
+        AudioTrack::operator=(other);
+        bitrate = other.bitrate;
+        has_id3_tags = other.has_id3_tags; 
+    }
+    return *this;
+}
+
+MP3Track::MP3Track(MP3Track&& other) noexcept:
+    AudioTrack(other), 
+    bitrate(other.bitrate), 
+    has_id3_tags(other.has_id3_tags) {}
+
+MP3Track& MP3Track::operator=(MP3Track&& other) noexcept {
+    // if this=other nothing needs to be done
+    if (this != &other){
+        AudioTrack::operator=(other);
+        bitrate = other.bitrate;
+        has_id3_tags = other.has_id3_tags; 
+    }
+    return *this;
+}

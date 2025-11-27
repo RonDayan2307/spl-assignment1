@@ -55,6 +55,13 @@ public:
     // Getters
     int get_bitrate() const { return bitrate; }
     bool has_tags() const { return has_id3_tags; }
+
+    MP3Track(const MP3Track& other);
+    MP3Track& operator=(const MP3Track& other);
+    MP3Track(MP3Track&& other) noexcept;
+    MP3Track& operator=(MP3Track&& other) noexcept;
+
 };
+
 
 #endif // MP3TRACK_H

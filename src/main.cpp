@@ -66,6 +66,8 @@ void test_phase_2_rule_of_5() {
         std::cout << "Testing copy constructor..." << std::endl;
         MP3Track original("Original Track", {"Test Artist"}, 200, 128, 256);
         MP3Track copied = original;  // Should call copy constructor
+        std::cout<<copied.get_bitrate()<<"vs "<<original.get_bitrate()<<std::endl;
+
 
         std::cout << "Original: " << original.get_title() << std::endl;
         std::cout << "Copied: " << copied.get_title() << std::endl;
@@ -189,7 +191,7 @@ int main(int argc, char* argv[]) {
         // Test each phase individually
         test_phase_1_memory_leaks();
         test_phase_2_rule_of_5();
-        // test_phase_3();
+        test_phase_3();
         demonstrate_polymorphism();
         std::cout << "\n(Set 'run_software' to true in main.cpp to run the full interactive session.)\n" << std::endl;
     }
