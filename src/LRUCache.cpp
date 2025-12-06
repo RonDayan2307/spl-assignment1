@@ -36,7 +36,7 @@ bool LRUCache::put(PointerWrapper<AudioTrack> track) {
     const std::string& new_title = track->get_title();
 
     for (size_t i = 0; i < max_size; ++i) {
-        if (slots[i].getTrack()->get_title() == new_title) {
+        if (slots[i].getTrack() != nullptr && slots[i].getTrack()->get_title() == new_title) {
             access_counter++;
             slots[i].access(access_counter);
             return false;
@@ -102,11 +102,13 @@ size_t LRUCache::findSlot(const std::string& track_id) const {
  */
 size_t LRUCache::findLRUSlot() const {
     int ans = max_size;
+    int time = -1;
     for (size_t i = 0; i < max_size; ++i) {
         if (slots[i].getTrack() != nullptr) {
             int value = slots[i].getLastAccessTime();
-            if (ans > value){
-                ans = value;
+            if (time > value || time == -1){
+                time = value;
+                ans = i;
             }
         }
     }
