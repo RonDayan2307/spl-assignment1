@@ -7,9 +7,12 @@
  * TODO: Implement MixingEngineService constructor
  */
 MixingEngineService::MixingEngineService()
-    : decks(), active_deck(1), auto_sync(false), bpm_tolerance(0)
+    : decks(), active_deck(0), auto_sync(false), bpm_tolerance(0)
 {
     // Your implementation here
+    decks[0] = nullptr;
+    decks[1] = nullptr;
+    std::cout << "[MixingEngineService] Initialized with 2 empty decks.\n";
 }
 
 /**
@@ -17,6 +20,9 @@ MixingEngineService::MixingEngineService()
  */
 MixingEngineService::~MixingEngineService() {
     // Your implementation here
+    std::cout << "[MixingEngineService] Cleaning up decks...\n";
+    if (decks[0]) delete decks[0];
+    if (decks[1]) delete decks[1];
 }
 
 
