@@ -20,6 +20,60 @@ Playlist::~Playlist() {
     #endif
 }
 
+Playlist::Playlist(const Playlist& other) 
+    : head(nullptr), playlist_name(other.playlist_name), track_count(0) {
+    
+    std::cout << "Copying playlist: " << playlist_name << std::endl;
+
+    PlaylistNode* src_node = other.head;
+    PlaylistNode** dst_ptr = &head; 
+
+    while (src_node) {
+        if (src_node->track) {
+            PointerWrapper<AudioTrack> cloned_wrapper = src_node->track->clone();
+            AudioTrack* new_track = cloned_wrapper.release();
+            if (new_track) {
+                *dst_ptr = new PlaylistNode(new_track);
+                dst_ptr = &((*dst_ptr)->next);
+                track_count++;
+            }
+        }
+        src_node = src_node->next;
+    }
+}
+
+Playlist& Playlist::operator=(const Playlist& other) {
+    if (this != &other) {
+        Playlist temp(other);
+        swap(temp);
+    }
+    return *this;
+}
+
+Playlist::Playlist(Playlist&& other) noexcept 
+    : head(nullptr), playlist_name(""), track_count(0) {
+    swap(other);
+    #ifdef DEBUG
+    std::cout << "Playlist moved: " << playlist_name << std::endl;
+    #endif
+}
+
+Playlist& Playlist::operator=(Playlist&& other) noexcept {
+    if (this != &other) {
+        while (head != nullptr) {
+            PlaylistNode* next = head->next;
+            delete head->track;
+            delete head;
+            head = next;
+        }
+        head = nullptr;
+        track_count = 0;
+        
+        swap(other);
+    }
+    return *this;
+}
+
 void Playlist::add_track(AudioTrack* track) {
     if (!track) {
         std::cout << "[Error] Cannot add null track to playlist" << std::endl;
@@ -135,4 +189,10 @@ std::vector<AudioTrack*> Playlist::getTracks() const {
         current = current->next;
     }
     return tracks;
+}
+
+void Playlist::swap(Playlist& other) {
+    std::swap(playlist_name, other.playlist_name);
+    std::swap(head, other.head);
+    std::swap(track_count, other.track_count);
 }

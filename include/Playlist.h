@@ -31,9 +31,18 @@ private:
 
 public:
     /**
-     * Constructor
+     * Constructors
      */
     Playlist(const std::string& name="");
+    
+    // Copy Constructor
+    Playlist(const Playlist& other);
+    // Copy Assignment
+    Playlist& operator=(const Playlist& other);
+    // Move Constructor
+    Playlist(Playlist&& other) noexcept;
+    // Move Assignment
+    Playlist& operator=(Playlist&& other) noexcept;
 
     /**
      * Destructor
@@ -85,6 +94,8 @@ public:
      * Get all tracks as a vector
      */
     std::vector<AudioTrack*> getTracks() const;
+
+    void swap(Playlist& other);
 
 };
 

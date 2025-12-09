@@ -73,7 +73,27 @@ bool DJSession::load_playlist(const std::string& playlist_name)  {
  */
 int DJSession::load_track_to_controller(const std::string& track_name) {
     // Your implementation here
-    return 0; // Placeholder
+    AudioTrack* track = library_service.findTrack(track_name);
+    
+    if (!track) {
+        std::cerr << "[ERROR] Track '" << track_name << "' not found in library.\n";
+        stats.errors++;
+        return 0;
+    }
+    
+    int result = controller_service.loadTrackToCache(*track);
+    
+    stats.tracks_processed++;
+    if (result == 1) {
+        stats.cache_hits++;
+    } else {
+        stats.cache_misses++;
+        if (result == -1) {
+            stats.cache_evictions++;
+        }
+    }
+    
+    return result;
 }
 
 /**
@@ -85,7 +105,26 @@ int DJSession::load_track_to_controller(const std::string& track_name) {
 bool DJSession::load_track_to_mixer_deck(const std::string& track_title) {
     std::cout << "[System] Delegating track transfer to MixingEngineService for: " << track_title << std::endl;
     // your implementation here
-    return false; // Placeholder
+    AudioTrack* cached_track = controller_service.getTrackFromCache(track_title);
+    
+    if (!cached_track) {
+        std::cerr << "[ERROR] Track not found in cache (unexpected).\n";
+        stats.errors++;
+        return false;
+    }
+    
+    int deck = mixing_service.loadTrackToDeck(*cached_track);
+    
+    if (deck != -1) {
+        if (deck == 0) stats.deck_loads_a++;
+        else stats.deck_loads_b++;
+        
+        stats.transitions++;
+        return true;
+    }
+    
+    stats.errors++;
+    return false;
 }
 
 /**
@@ -116,8 +155,39 @@ void DJSession::simulate_dj_performance() {
     std::cout << "Cache Capacity: " << session_config.controller_cache_size << " slots (LRU policy)" << std::endl;
     std::cout << "\n--- Processing Tracks ---" << std::endl;
 
-    std::cout << "TODO: Implement the DJ performance simulation workflow here." << std::endl;
-    // Your implementation here
+    std::vector<std::string> playlists_to_run;
+    
+    if (play_all) {
+        for (const auto& kv : session_config.playlists) {
+            playlists_to_run.push_back(kv.first);
+        }
+        std::sort(playlists_to_run.begin(), playlists_to_run.end());
+    } else {
+        std::string chosen = display_playlist_menu_from_config();
+        if (chosen.empty()) {
+            std::cout << "Session cancelled by user or all playlists played.\n";
+            return; 
+        }
+        playlists_to_run.push_back(chosen);
+    }
+
+    for (const auto& pl_name : playlists_to_run) {
+        if (!load_playlist(pl_name)) continue;
+        for (const auto& title : track_titles) {
+            std::cout << "\n--- Processing: " << title << " ---\n";
+            std::cout << "[System] Loading track '" << title << "' to controller...\n";
+            load_track_to_controller(title);
+            controller_service.displayCacheStatus();
+            load_track_to_mixer_deck(title);
+            mixing_service.displayDeckStatus();
+        }
+        print_session_summary();
+        if (!play_all) break;
+    }
+    
+    if (!play_all) {
+         std::cout << "Session cancelled by user or all playlists played.\n";
+    }
 }
 
 

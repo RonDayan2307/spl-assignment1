@@ -16,27 +16,43 @@ void MP3Track::load() {
     std::cout << "[MP3Track::load] Loading MP3: \"" << title
               << "\" at " << bitrate << " kbps...\n";
     // TODO: Implement MP3 loading with format-specific operations
-    // NOTE: Use exactly 2 spaces before the arrow (→) character
+    if (has_id3_tags) {
+        std::cout << "  → Processing ID3 metadata (artist info, album art, etc.)...\n";
+    }
+    std::cout << "  → Decoding MP3 frames...\n";
+    std::cout << "  → Load complete.\n";
     
 }
 
 void MP3Track::analyze_beatgrid() {
      std::cout << "[MP3Track::analyze_beatgrid] Analyzing beat grid for: \"" << title << "\"\n";
     // TODO: Implement MP3-specific beat detection analysis
-    // NOTE: Use exactly 2 spaces before each arrow (→) character
+    int estimated_beats = static_cast<int>((duration_seconds / 60.0) * bpm);
+    
+    double precision = 0;
+    if (bitrate >= 320){
+        precision = 1.0;
+    } else {
+        if (bitrate >= 256){
+            precision = 0.8;
+        } else {
+            bitrate = 0.6;
+        }    
+    }
 
+    std::cout << "  → Estimated beats: " << estimated_beats 
+              << "  → Compression precision factor: " << precision << "\n";
 }
 
 double MP3Track::get_quality_score() const {
     // TODO: Implement comprehensive quality scoring
-    // NOTE: This method does NOT print anything
-
-    return 0.0; // Replace with your implementation
+    double ans = (bitrate/320.0)*100;
+    return ans;
 }
 
 PointerWrapper<AudioTrack> MP3Track::clone() const {
     // TODO: Implement polymorphic cloning
-    return PointerWrapper<AudioTrack>(nullptr); // Replace with your implementation
+    return PointerWrapper<AudioTrack>(new MP3Track(*this));
 }
 
 

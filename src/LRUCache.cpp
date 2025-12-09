@@ -23,7 +23,7 @@ bool LRUCache::put(PointerWrapper<AudioTrack> track) {
 
     //handling 4 scenarios:
     //1 - track is empty
-    //2 - track exists already therefore it will be updated
+    //2 - track exists in cache already therefore it will be updated
     //3 - track does not exist and the cache is full - eviction of LRU
     //4 - track does not exist and the cache is not full - no eviction
 
@@ -35,16 +35,18 @@ bool LRUCache::put(PointerWrapper<AudioTrack> track) {
     //2
     const std::string& new_title = track->get_title();
 
+    size_t track_index = findSlot(new_title);
+
     for (size_t i = 0; i < max_size; ++i) {
-        if (slots[i].getTrack() != nullptr && slots[i].getTrack()->get_title() == new_title) {
+        if (track_index != max_size) {
             access_counter++;
-            slots[i].access(access_counter);
+            slots[track_index].access(access_counter);
             return false;
         }
     }
 
     //3 - if full then evacuate
-    int empty_slot = findEmptySlot();
+    size_t empty_slot = findEmptySlot();
     if (empty_slot == max_size) {
         evictLRU();
         ans = true;
@@ -103,8 +105,8 @@ size_t LRUCache::findSlot(const std::string& track_id) const {
 size_t LRUCache::findLRUSlot() const {
     int ans = max_size;
     int time = -1;
-    for (size_t i = 0; i < max_size; ++i) {
-        if (slots[i].getTrack() != nullptr) {
+    for (size_t i = 0; i < max_size; i++) {
+        if (slots[i].isOccupied()) {
             int value = slots[i].getLastAccessTime();
             if (time > value || time == -1){
                 time = value;

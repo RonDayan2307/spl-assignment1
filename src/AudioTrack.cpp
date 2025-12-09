@@ -42,7 +42,13 @@ AudioTrack::~AudioTrack() {
     waveform_data = nullptr;
 }
 
-AudioTrack::AudioTrack(const AudioTrack& other)
+AudioTrack::AudioTrack(const AudioTrack& other) :
+    title(other.title),
+    artists(other.artists),
+    duration_seconds(other.duration_seconds),
+    bpm(other.bpm),
+    waveform_data(nullptr),
+    waveform_size(other.waveform_size)
 {
     // TODO: Implement the copy constructor
     #ifdef DEBUG
@@ -50,16 +56,9 @@ AudioTrack::AudioTrack(const AudioTrack& other)
     #endif
     // Your code here...
 
-    // copying values that are on the AF
-    title = other.title;
-    artists = other.artists;
-    duration_seconds = other.duration_seconds;
-    bpm = other.bpm;
-    waveform_size = other.waveform_size;
-
     // allocating memory on heap and then deep copying the values
     waveform_data = new double[waveform_size];
-    for (size_t i = 0; i < waveform_size; ++i) {
+    for (size_t i = 0; i < waveform_size; i++) {
         waveform_data[i] = other.waveform_data[i];
     }
 }
@@ -87,29 +86,28 @@ AudioTrack& AudioTrack::operator=(const AudioTrack& other) {
 
         // allocating memory on heap and then deep copying the values
         waveform_data = new double[waveform_size];
-        for (size_t i = 0; i < waveform_size; ++i) {
+        for (size_t i = 0; i < waveform_size; i++) {
             waveform_data[i] = other.waveform_data[i];
         }
     }
     return *this;
 }
 
-AudioTrack::AudioTrack(AudioTrack&& other) noexcept {
+AudioTrack::AudioTrack(AudioTrack&& other) noexcept :
+    title(other.title),
+    artists(other.artists),
+    duration_seconds(other.duration_seconds),
+    bpm(other.bpm),
+    waveform_data(other.waveform_data),
+    waveform_size(other.waveform_size)
+    {
     // TODO: Implement the move constructor
     #ifdef DEBUG
     std::cout << "AudioTrack move constructor called for: " << other.title << std::endl;
     #endif
     // Your code here...
-
-    // copying values that are on the AF
-    title = other.title;
-    artists = other.artists;
-    duration_seconds = other.duration_seconds;
-    bpm = other.bpm;
-    waveform_size = other.waveform_size;
-
-    // stealing the address of the original audiotrack and removing its the access to that address
-    waveform_data = other.waveform_data;
+    // reseting the source
+    other.waveform_size = 0;
     other.waveform_data = nullptr;
 }
 
