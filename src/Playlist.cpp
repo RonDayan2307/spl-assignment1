@@ -191,7 +191,7 @@ std::vector<AudioTrack*> Playlist::getTracks() const {
     return tracks;
 }
 
-void Playlist::swap(Playlist& other) {
+void Playlist::swap(Playlist& other) noexcept {
     std::swap(playlist_name, other.playlist_name);
     std::swap(head, other.head);
     std::swap(track_count, other.track_count);

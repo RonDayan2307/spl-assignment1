@@ -95,7 +95,7 @@ public:
      */
     std::vector<AudioTrack*> getTracks() const;
 
-    void swap(Playlist& other);
+    void swap(Playlist& other) noexcept;
 
 };
 
