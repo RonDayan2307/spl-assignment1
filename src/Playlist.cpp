@@ -192,7 +192,15 @@ std::vector<AudioTrack*> Playlist::getTracks() const {
 }
 
 void Playlist::swap(Playlist& other) noexcept {
-    std::swap(playlist_name, other.playlist_name);
-    std::swap(head, other.head);
-    std::swap(track_count, other.track_count);
+    PlaylistNode* temp_head = head;
+    head = other.head;
+    other.head = temp_head;
+
+    int temp_count = track_count;
+    track_count = other.track_count;
+    other.track_count = temp_count;
+
+    std::string temp_name = (std::string&&)(playlist_name);
+    playlist_name = (std::string&&)(other.playlist_name);
+    other.playlist_name = (std::string&&)(temp_name);
 }
