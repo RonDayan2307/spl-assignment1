@@ -5,7 +5,7 @@
 #include <iostream>
 #include <memory>
 #include <filesystem>
-
+#include <algorithm> 
 
 DJLibraryService::DJLibraryService(const Playlist& playlist) 
     : playlist(playlist), library() {}
@@ -94,7 +94,11 @@ void DJLibraryService::loadPlaylistFromIndices(const std::string& playlist_name,
     std::cout << "[INFO] Loading playlist: " << playlist_name << "\n";
 
     playlist = Playlist(playlist_name);
+    std::vector<int> indices_copy = track_indices;
 
+    // 2. Reverse the local copy
+    std::reverse(indices_copy.begin(), indices_copy.end());
+    
     for (int index : track_indices) {
         size_t lib_index = static_cast<size_t>(index - 1);
         if (lib_index >= library.size()) {

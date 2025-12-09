@@ -18,7 +18,6 @@ AudioTrack* LRUCache::get(const std::string& track_id) {
  * TODO: Implement the put() method for LRUCache
  */
 bool LRUCache::put(PointerWrapper<AudioTrack> track) {
-    access_counter++;
     bool ans = false;
 
     //handling 4 scenarios:

@@ -15,6 +15,28 @@ MixingEngineService::MixingEngineService()
     std::cout << "[MixingEngineService] Initialized with 2 empty decks.\n";
 }
 
+MixingEngineService::MixingEngineService(const MixingEngineService &other):
+active_deck(other.active_deck),
+auto_sync(other.auto_sync),
+bpm_tolerance(other.bpm_tolerance)
+{
+    decks[0] = other.decks[0];
+    decks[1] = other.decks[1];
+}
+
+MixingEngineService& MixingEngineService:: operator=(const MixingEngineService &other)
+{
+    if (this != &other){
+        active_deck = other.active_deck;
+        auto_sync = other.auto_sync;
+        bpm_tolerance = other.bpm_tolerance;
+        decks[0] = other.decks[0];
+        decks[1] = other.decks[1];
+    }
+
+    return *this;
+}
+
 /**
  * TODO: Implement MixingEngineService destructor
  */
